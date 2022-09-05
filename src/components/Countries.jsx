@@ -1,6 +1,11 @@
 import React from 'react';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
+import {
+  initializeCountries,
+  search,
+} from '../features/countries/countriesSlice';
 
 import ListGroup from 'react-bootstrap/ListGroup';
 import Card from 'react-bootstrap/Card';
@@ -11,23 +16,17 @@ import Form from 'react-bootstrap/Form';
 import Spinner from 'react-bootstrap/Spinner';
 
 const Countries = () => {
-  const [countries, setCountries] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [search, setSearch] = useState('');
+  const dispatch = useDispatch();
+
+  const countriesList = useSelector((state) => state.countries.countries);
+  const loading = useSelector((state) => state.countries.isLoading);
+  const searchInput = useSelector((state) => state.countries.search);
 
   useEffect(() => {
-    axios
-      .get('https://restcountries.com/v3.1/all')
-      .catch((error) => {
-        console.log(error);
-      })
-      .then((res) => {
-        setCountries(res.data);
-        setIsLoading(false);
-      });
-  }, []);
+    dispatch(initializeCountries());
+  }, [dispatch]);
 
-  if (isLoading) {
+  if (loading) {
     return (
       <Col className="text-center m-5">
         <Spinner
@@ -53,15 +52,18 @@ const Countries = () => {
               className="me-2 "
               placeholder="Search for countries"
               aria-label="Search"
-              onChange={(e) => setSearch(e.target.value)}
+              /*onChange={(e) => setSearch(e.target.value)}*/
+              onChange={(e) => dispatch(search(e.target.value))}
             />
           </Form>
         </Col>
       </Row>
       <Row xs={2} md={3} lg={4} className=" g-3">
-        {countries
+        {countriesList
           .filter((c) => {
-            return c.name.official.toLowerCase().includes(search.toLowerCase());
+            return c.name.official
+              .toLowerCase()
+              .includes(searchInput.toLowerCase());
           })
           .map((country) => (
             <Col className="mt-5">
