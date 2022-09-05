@@ -14,6 +14,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Spinner from 'react-bootstrap/Spinner';
+import { LinkContainer } from 'react-router-bootstrap';
 
 const Countries = () => {
   const dispatch = useDispatch();
@@ -66,47 +67,52 @@ const Countries = () => {
               .includes(searchInput.toLowerCase());
           })
           .map((country) => (
-            <Col className="mt-5">
-              <Card key={country.name.official} className="h-100">
-                <Card.Img
-                  variant="top"
-                  src={country.flags.svg}
-                  className="rounded h-50"
-                  style={{
-                    objectFit: 'cover',
-                    minHeight: '200px',
-                    maxHeight: '200px',
-                  }}
-                />
-                <Card.Body className="d-flex flex-column">
-                  <Card.Title>{country.name.common}</Card.Title>
-                  <Card.Subtitle className="mb-5 text-muted">
-                    {country.name.official}
-                  </Card.Subtitle>
-                  <ListGroup
-                    variant="flush"
-                    className="flex-grow-1 justify-content-end"
-                  >
-                    <ListGroup.Item>
-                      <i className="bi bi-translate me-2"></i>
+            <Col className="mt-5" key={country.name.official}>
+              <LinkContainer
+                to={`/countries/${country.name.common}`}
+                state={{ country: country }}
+              >
+                <Card className="h-100">
+                  <Card.Img
+                    variant="top"
+                    src={country.flags.svg}
+                    className="rounded h-50"
+                    style={{
+                      objectFit: 'cover',
+                      minHeight: '200px',
+                      maxHeight: '200px',
+                    }}
+                  />
+                  <Card.Body className="d-flex flex-column">
+                    <Card.Title>{country.name.common}</Card.Title>
+                    <Card.Subtitle className="mb-5 text-muted">
+                      {country.name.official}
+                    </Card.Subtitle>
+                    <ListGroup
+                      variant="flush"
+                      className="flex-grow-1 justify-content-end"
+                    >
+                      <ListGroup.Item>
+                        <i className="bi bi-translate me-2"></i>
 
-                      {Object.values(country.languages || {}).join(', ')}
-                    </ListGroup.Item>
-                    <ListGroup.Item>
-                      <i className="bi bi-cash-coin me-2"></i>
+                        {Object.values(country.languages || {}).join(', ')}
+                      </ListGroup.Item>
+                      <ListGroup.Item>
+                        <i className="bi bi-cash-coin me-2"></i>
 
-                      {Object.values(country.currencies || {})
-                        .map((currency) => currency.name)
-                        .join(', ')}
-                    </ListGroup.Item>
+                        {Object.values(country.currencies || {})
+                          .map((currency) => currency.name)
+                          .join(', ')}
+                      </ListGroup.Item>
 
-                    <ListGroup.Item>
-                      <i className="bi bi-people me-2"></i>
-                      {country.population}
-                    </ListGroup.Item>
-                  </ListGroup>
-                </Card.Body>
-              </Card>
+                      <ListGroup.Item>
+                        <i className="bi bi-people me-2"></i>
+                        {country.population}
+                      </ListGroup.Item>
+                    </ListGroup>
+                  </Card.Body>
+                </Card>
+              </LinkContainer>
             </Col>
           ))}
       </Row>
