@@ -94,7 +94,10 @@ console.log("CountriesList: ", countriesList)
                 state={{ country: country }}
               >
                 <Card className="h-100">
-                  <Button onClick={() => dispatch(addFavourite(country.name.common))}>Add Fav</Button>
+                {/* Conditional rendering for if is on favourite or not */}
+                <div style={{display: 'flex', justifyContent: 'flex-end'}}>
+                <i class="bi bi-heart-fill text-danger m-1 p-1" onClick={() => dispatch(addFavourite(country.name.common))}></i>
+                </div>
                   <Card.Img
                     variant="top"
                     src={country.flags.svg}

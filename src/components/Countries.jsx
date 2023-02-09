@@ -5,9 +5,8 @@ import {
   initializeCountries,
   search
 } from '../features/countries/countriesSlice';
-import { addFavourite, clearFavourites } from '../features/countries/favouritesSlice';
+import { addFavourite } from '../features/countries/favouritesSlice';
 
-import { Button } from 'react-bootstrap';
 import Card from 'react-bootstrap/Card';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
@@ -60,9 +59,6 @@ const Countries = () => {
           </Form>
         </Col>
       </Row>
-      <Row xs={2} md={3} lg={4}>
-        <Button onClick={() => dispatch(clearFavourites())}>Clear Favourites</Button>
-      </Row>
       <Row xs={2} md={3} lg={4} className=" g-3">
         {countriesList
           .filter((c) => {
@@ -77,7 +73,9 @@ const Countries = () => {
                 state={{ country: country }}
               >
                 <Card className="h-100">
-                  <Button onClick={() => dispatch(addFavourite(country.name.common))}>Add Fav</Button>
+                  <div style={{display: 'flex', justifyContent: 'flex-end'}}>
+                <i class="bi bi-heart-fill text-danger m-1 p-1" onClick={() => dispatch(addFavourite(country.name.common))}></i>
+                </div>
                   <Card.Img
                     variant="top"
                     src={country.flags.svg}
