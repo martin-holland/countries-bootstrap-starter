@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
-  initializeCountries,
-  search
+    initializeCountries,
+    search
 } from '../features/countries/countriesSlice';
 import { addFavourite, clearFavourites } from '../features/countries/favouritesSlice';
 
@@ -17,15 +17,30 @@ import Row from 'react-bootstrap/Row';
 import Spinner from 'react-bootstrap/Spinner';
 import { LinkContainer } from 'react-router-bootstrap';
 
-const Countries = () => {
+const Favourites = () => {
   const dispatch = useDispatch();
 
-  const countriesList = useSelector((state) => state.countries.countries);
+  let countriesList = useSelector((state) => state.countries.countries);
   const loading = useSelector((state) => state.countries.isLoading);
   const searchInput = useSelector((state) => state.countries.search);
+//   let favouritesList = localStorage.getItem('Favourites')
+  const [favouritesList, setFavouritesList] = useState([])
+    console.log("FavouritesList: ",favouritesList)
+
+  if (favouritesList !== null) {
+  countriesList = countriesList.filter(c => favouritesList.includes(c.name.common))
+    }
+    
+    else {
+    countriesList = []
+    }
+
+console.log("CountriesList: ", countriesList)
+
 
   useEffect(() => {
     dispatch(initializeCountries());
+    setFavouritesList(localStorage.getItem('Favourites'))
   }, [dispatch]);
 
   if (loading) {
@@ -61,7 +76,9 @@ const Countries = () => {
         </Col>
       </Row>
       <Row xs={2} md={3} lg={4}>
-        <Button onClick={() => dispatch(clearFavourites())}>Clear Favourites</Button>
+        <Button onClick={() => {
+            setFavouritesList([])
+            dispatch(clearFavourites())}}>Clear Favourites</Button>
       </Row>
       <Row xs={2} md={3} lg={4} className=" g-3">
         {countriesList
@@ -125,4 +142,4 @@ const Countries = () => {
   );
 };
 
-export default Countries;
+export default Favourites;

@@ -1,12 +1,12 @@
+import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import axios from 'axios';
 
+import { Container, Row } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
-import Spinner from 'react-bootstrap/Spinner';
-import { Container, Row } from 'react-bootstrap';
 import Image from 'react-bootstrap/Image';
+import Spinner from 'react-bootstrap/Spinner';
 
 const CountriesSingle = () => {
   const location = useLocation();
@@ -17,10 +17,14 @@ const CountriesSingle = () => {
 
   const navigate = useNavigate();
 
+  const countryTest = {
+    capital: 'Helsinki'
+  }
+
   useEffect(() => {
     axios
       .get(
-        `https://api.openweathermap.org/data/2.5/weather?q=${country.capital}&units=metric&appid=${process.env.REACT_APP_OPENWEATHER_KEY}`
+        `https://api.openweathermap.org/data/2.5/weather?q=${countryTest.capital}&units=metric&appid=${process.env.REACT_APP_OPENWEATHER_KEY}`
       )
       .catch((error) => {
         console.log(error);
@@ -31,7 +35,7 @@ const CountriesSingle = () => {
         setWeather(res.data);
         setLoading(false);
       });
-  }, []);
+  }, [countryTest.capital]);
 
   if (loading) {
     return (
