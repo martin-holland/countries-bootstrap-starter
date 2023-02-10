@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 
-import { Spinner } from 'react-bootstrap';
+import { Button, Spinner } from 'react-bootstrap';
 import Card from 'react-bootstrap/Card';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
@@ -11,18 +11,27 @@ import Row from 'react-bootstrap/Row';
 import { useDispatch, useSelector } from 'react-redux';
 import { LinkContainer } from 'react-router-bootstrap';
 import { initializeCountries } from "../features/countries/countriesSlice";
-import { addFavourite } from '../features/countries/favouritesSlice';
+import { clearFavourites } from '../features/countries/favouritesSlice';
 const numFormatter = require('@skalwar/simple_number_formatter');
 
-const Countries = () => {
+const Favourites = () => {
   const dispatch = useDispatch();
 
-  const countriesList = useSelector((state) => state.countries.countries)
+  let countriesList = useSelector((state) => state.countries.countries)
   const loading = useSelector((state) => state.countries.isLoading)
   const [search, setSearch] = useState('')
+  const [favouritesList, setFavouritesList] = useState([])
+
+  if (favouritesList !== null) {
+    countriesList = countriesList.filter(c => favouritesList.includes(c.name.common))
+  }
+  else {
+    countriesList = [];
+  }
 
   useEffect(() => {
     dispatch(initializeCountries())
+    setFavouritesList(localStorage.getItem('Favourites'))
   }, [dispatch])
 
   if (loading) {
@@ -56,6 +65,13 @@ const Countries = () => {
           </Form>
         </Col>
       </Row>
+
+      <Row xs={2} md={3} lg={4} className=" g-3">
+        <Button onClick={() => {
+          dispatch(clearFavourites())
+        }}>Clear Favourites</Button>
+      </Row>
+
       <Row xs={2} md={3} lg={4} className=" g-3">
         {countriesList.filter((c) => {
             return c.name.official
@@ -67,7 +83,6 @@ const Countries = () => {
                 state={{ country: country }}
               >
                 <Card className="h-100">
-                <i class="bi bi-heart-fill text-danger m-1 p-1" onClick={() => dispatch(addFavourite(country.name.common))}></i>
                 <Card.Img
                     variant="top"
                     src={country.flags.svg}
@@ -112,4 +127,4 @@ const Countries = () => {
   );
 };
 
-export default Countries;
+export default Favourites;
