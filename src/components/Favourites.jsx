@@ -11,7 +11,7 @@ import Row from 'react-bootstrap/Row';
 import { useDispatch, useSelector } from 'react-redux';
 import { LinkContainer } from 'react-router-bootstrap';
 import { initializeCountries } from "../features/countries/countriesSlice";
-import { clearFavourites, initializeFavourites } from '../features/countries/favouritesSlice';
+import { clearFavourites } from '../features/countries/favouritesSlice';
 const numFormatter = require('@skalwar/simple_number_formatter');
 
 const Favourites = () => {
@@ -19,8 +19,9 @@ const Favourites = () => {
 
   let countriesList = useSelector((state) => state.countries.countries)
   const loading = useSelector((state) => state.countries.isLoading)
-  const favouritesList = useSelector((state) => state.favourites.favourites)
   const [search, setSearch] = useState('')
+  const favouritesList = useSelector((state) => state.favourites.favourites)
+
 
   if (favouritesList !== null) {
     countriesList = countriesList.filter(c => favouritesList.includes(c.name.common))
@@ -32,10 +33,6 @@ const Favourites = () => {
   useEffect(() => {
     dispatch(initializeCountries())
   }, [dispatch])
-
-  useEffect(() => {
-    dispatch(initializeFavourites())
-  },[dispatch, favouritesList])
 
   if (loading) {
     return (
