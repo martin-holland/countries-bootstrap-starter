@@ -6,6 +6,7 @@ import Home from './components/Home';
 import Layout from './pages/Layout';
 
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import Favourites from './components/Favourites';
 
 const App = () => {
   return (
@@ -14,6 +15,7 @@ const App = () => {
         <Route path="/" element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/countries" element={<Countries />} />
+          <Route path="/favourites" element={<Favourites />} />
           <Route path="/countries/:single" element={<CountriesSingle />} />
         </Route>
       </Routes>
