@@ -7,12 +7,14 @@ import Layout from './pages/Layout';
 
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import Favourites from './components/Favourites';
+import { Login } from './components/Login';
 
 const App = () => {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Layout />}>
+          <Route path="/login" element={<Login/>}/>
           <Route path="/" element={<Home />} />
           <Route path="/countries" element={<Countries />} />
           <Route path="/favourites" element={<Favourites />} />
