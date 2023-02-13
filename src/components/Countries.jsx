@@ -1,31 +1,29 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react';
 
-import {
-  initializeCountries,
-  search
-} from '../features/countries/countriesSlice';
-import { addFavourite } from '../features/countries/favouritesSlice';
 
+import { Spinner } from 'react-bootstrap';
 import Card from 'react-bootstrap/Card';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Row from 'react-bootstrap/Row';
-import Spinner from 'react-bootstrap/Spinner';
+import { useDispatch, useSelector } from 'react-redux';
 import { LinkContainer } from 'react-router-bootstrap';
+import { initializeCountries } from "../features/countries/countriesSlice";
+import { addFavourite } from '../features/countries/favouritesSlice';
+const numFormatter = require('@skalwar/simple_number_formatter');
 
 const Countries = () => {
   const dispatch = useDispatch();
 
-  const countriesList = useSelector((state) => state.countries.countries);
-  const loading = useSelector((state) => state.countries.isLoading);
-  const searchInput = useSelector((state) => state.countries.search);
+  const countriesList = useSelector((state) => state.countries.countries)
+  const loading = useSelector((state) => state.countries.isLoading)
+  const [search, setSearch] = useState('')
 
   useEffect(() => {
-    dispatch(initializeCountries());
-  }, [dispatch]);
+    dispatch(initializeCountries())
+  }, [dispatch])
 
   if (loading) {
     return (
@@ -53,30 +51,24 @@ const Countries = () => {
               className="me-2 "
               placeholder="Search for countries"
               aria-label="Search"
-              /*onChange={(e) => setSearch(e.target.value)}*/
-              onChange={(e) => dispatch(search(e.target.value))}
+              onChange={(e) => setSearch(e.target.value)}
             />
           </Form>
         </Col>
       </Row>
       <Row xs={2} md={3} lg={4} className=" g-3">
-        {countriesList
-          .filter((c) => {
+        {countriesList.filter((c) => {
             return c.name.official
               .toLowerCase()
-              .includes(searchInput.toLowerCase());
-          })
-          .map((country) => (
-            <Col className="mt-5" key={country.name.official}>
+              .includes(search.toLowerCase());
+          }).map((country) => (<Col className="mt-5" key={country.name.common}>
               <LinkContainer
                 to={`/countries/${country.name.common}`}
                 state={{ country: country }}
               >
                 <Card className="h-100">
-                  <div style={{display: 'flex', justifyContent: 'flex-end'}}>
-                <i class="bi bi-heart-fill text-danger m-1 p-1" onClick={() => dispatch(addFavourite(country.name.common))}></i>
-                </div>
-                  <Card.Img
+                <i className="bi bi-heart-fill text-danger m-1 p-1" onClick={() => dispatch(addFavourite(country.name.common))}></i>
+                <Card.Img
                     variant="top"
                     src={country.flags.svg}
                     className="rounded h-50"
@@ -97,27 +89,24 @@ const Countries = () => {
                     >
                       <ListGroup.Item>
                         <i className="bi bi-translate me-2"></i>
-
-                        {Object.values(country.languages || {}).join(', ')}
+                        {Object.values(country.languages ?? {}).join(', ')}
                       </ListGroup.Item>
                       <ListGroup.Item>
                         <i className="bi bi-cash-coin me-2"></i>
-
                         {Object.values(country.currencies || {})
                           .map((currency) => currency.name)
                           .join(', ')}
                       </ListGroup.Item>
-
                       <ListGroup.Item>
                         <i className="bi bi-people me-2"></i>
-                        {country.population}
+                        {numFormatter(country.population)}
                       </ListGroup.Item>
                     </ListGroup>
                   </Card.Body>
                 </Card>
               </LinkContainer>
-            </Col>
-          ))}
+            </Col>))}
+            
       </Row>
     </Container>
   );
