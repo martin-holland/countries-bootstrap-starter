@@ -11,7 +11,7 @@ import Row from 'react-bootstrap/Row';
 import { useDispatch, useSelector } from 'react-redux';
 import { LinkContainer } from 'react-router-bootstrap';
 import { initializeCountries } from "../features/countries/countriesSlice";
-import { clearFavourites } from '../features/countries/favouritesSlice';
+import { clearFavourites, initializeFavourites } from '../features/countries/favouritesSlice';
 const numFormatter = require('@skalwar/simple_number_formatter');
 
 const Favourites = () => {
@@ -19,8 +19,8 @@ const Favourites = () => {
 
   let countriesList = useSelector((state) => state.countries.countries)
   const loading = useSelector((state) => state.countries.isLoading)
+  const favouritesList = useSelector((state) => state.favourites.favourites)
   const [search, setSearch] = useState('')
-  const [favouritesList, setFavouritesList] = useState([])
 
   if (favouritesList !== null) {
     countriesList = countriesList.filter(c => favouritesList.includes(c.name.common))
@@ -31,8 +31,11 @@ const Favourites = () => {
 
   useEffect(() => {
     dispatch(initializeCountries())
-    setFavouritesList(localStorage.getItem('Favourites'))
   }, [dispatch])
+
+  useEffect(() => {
+    dispatch(initializeFavourites())
+  },[dispatch, favouritesList])
 
   if (loading) {
     return (
@@ -77,10 +80,11 @@ const Favourites = () => {
             return c.name.official
               .toLowerCase()
               .includes(search.toLowerCase());
-          }).map((country) => (<Col className="mt-5">
+          }).map((country) => (<Col className="mt-5" key={country.name.common}>
               <LinkContainer
                 to={`/countries/${country.name.common}`}
                 state={{ country: country }}
+                
               >
                 <Card className="h-100">
                 <Card.Img

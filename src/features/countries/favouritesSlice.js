@@ -7,6 +7,7 @@ export const favouritesSlice = createSlice({
     },
     reducers: {
         getFavourites(state, action) {
+            state.favourites = action.payload
         },
         addFavourite(state, action) {
             state.favourites = [...state.favourites, action.payload]
@@ -19,6 +20,13 @@ export const favouritesSlice = createSlice({
 
     }
 })
+
+export const initializeFavourites = () => {
+    return (dispatch) => {
+        const favourites = localStorage.getItem('Favourites')
+        if (favourites !== null) dispatch(getFavourites(favourites));
+    }
+}
 
 export const {getFavourites, addFavourite, clearFavourites} = favouritesSlice.actions
 

@@ -61,13 +61,13 @@ const Countries = () => {
             return c.name.official
               .toLowerCase()
               .includes(search.toLowerCase());
-          }).map((country) => (<Col className="mt-5">
+          }).map((country) => (<Col className="mt-5" key={country.name.common}>
               <LinkContainer
                 to={`/countries/${country.name.common}`}
                 state={{ country: country }}
               >
                 <Card className="h-100">
-                <i class="bi bi-heart-fill text-danger m-1 p-1" onClick={() => dispatch(addFavourite(country.name.common))}></i>
+                <i className="bi bi-heart-fill text-danger m-1 p-1" onClick={() => dispatch(addFavourite(country.name.common))}></i>
                 <Card.Img
                     variant="top"
                     src={country.flags.svg}
