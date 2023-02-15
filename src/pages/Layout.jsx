@@ -14,6 +14,8 @@ const Layout = () => {
 
   const [user] = useAuthState(auth);
 
+  console.log("User: ", user)
+
   return (
     <Container fluid>
       <Row>
@@ -35,7 +37,10 @@ const Layout = () => {
             </Navbar.Collapse>
           </Container>
           {user &&
-          <Button onClick={() => logout()}>Signout</Button>
+          <>
+          <h6 className="m-1">Hello {user.email}!</h6>
+          <Button className="m-1" onClick={() => logout()}>Signout</Button>
+          </>
 }
         </Navbar>
       </Row>
