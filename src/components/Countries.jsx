@@ -18,6 +18,7 @@ const Countries = () => {
   const dispatch = useDispatch();
 
   const countriesList = useSelector((state) => state.countries.countries)
+  const favouritesList = useSelector((state) => state.favourites.favourites)
   const loading = useSelector((state) => state.countries.isLoading)
   const [search, setSearch] = useState('')
 
@@ -67,7 +68,10 @@ const Countries = () => {
                 state={{ country: country }}
               >
                 <Card className="h-100">
-                <i className="bi bi-heart-fill text-danger m-1 p-1" onClick={() => dispatch(addFavourite(country.name.common))}></i>
+                {favouritesList.filter((favourite) => favourite === country.name.common) && (
+                  <i className="bi bi-heart text-danger m-1 p-1" onClick={() => dispatch(addFavourite(country.name.common))}></i>
+                )}
+                {/* <i className="bi bi-heart text-danger m-1 p-1" onClick={() => dispatch(addFavourite(country.name.common))}></i> */}
                 <Card.Img
                     variant="top"
                     src={country.flags.svg}
