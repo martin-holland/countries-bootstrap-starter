@@ -1,30 +1,29 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 
-
-import { Spinner } from 'react-bootstrap';
-import Card from 'react-bootstrap/Card';
-import Col from 'react-bootstrap/Col';
-import Container from 'react-bootstrap/Container';
-import Form from 'react-bootstrap/Form';
-import ListGroup from 'react-bootstrap/ListGroup';
-import Row from 'react-bootstrap/Row';
-import { useDispatch, useSelector } from 'react-redux';
-import { LinkContainer } from 'react-router-bootstrap';
+import { Spinner } from "react-bootstrap";
+import Card from "react-bootstrap/Card";
+import Col from "react-bootstrap/Col";
+import Container from "react-bootstrap/Container";
+import Form from "react-bootstrap/Form";
+import ListGroup from "react-bootstrap/ListGroup";
+import Row from "react-bootstrap/Row";
+import { useDispatch, useSelector } from "react-redux";
+import { LinkContainer } from "react-router-bootstrap";
 import { initializeCountries } from "../features/countries/countriesSlice";
-import { addFavourite } from '../features/countries/favouritesSlice';
-const numFormatter = require('@skalwar/simple_number_formatter');
+import { addFavourite, removeFavourite } from "../features/countries/favouritesSlice";
+const numFormatter = require("@skalwar/simple_number_formatter");
 
 const Countries = () => {
   const dispatch = useDispatch();
 
-  const countriesList = useSelector((state) => state.countries.countries)
-  const favouritesList = useSelector((state) => state.favourites.favourites)
-  const loading = useSelector((state) => state.countries.isLoading)
-  const [search, setSearch] = useState('')
+  const countriesList = useSelector((state) => state.countries.countries);
+  const favouritesList = useSelector((state) => state.favourites.favourites);
+  const loading = useSelector((state) => state.countries.isLoading);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
-    dispatch(initializeCountries())
-  }, [dispatch])
+    dispatch(initializeCountries());
+  }, [dispatch]);
 
   if (loading) {
     return (
@@ -47,7 +46,7 @@ const Countries = () => {
         <Col className="mt-5 d-flex justify-content-center">
           <Form>
             <Form.Control
-              style={{ width: '18rem' }}
+              style={{ width: "18rem" }}
               type="search"
               className="me-2 "
               placeholder="Search for countries"
@@ -58,28 +57,40 @@ const Countries = () => {
         </Col>
       </Row>
       <Row xs={2} md={3} lg={4} className=" g-3">
-        {countriesList.filter((c) => {
-            return c.name.official
-              .toLowerCase()
-              .includes(search.toLowerCase());
-          }).map((country) => (<Col className="mt-5" key={country.name.common}>
+        {countriesList
+          .filter((c) => {
+            return c.name.official.toLowerCase().includes(search.toLowerCase());
+          })
+          .map((country) => (
+            <Col className="mt-5" key={country.name.common}>
               <LinkContainer
                 to={`/countries/${country.name.common}`}
                 state={{ country: country }}
               >
                 <Card className="h-100">
-                {favouritesList.filter((favourite) => favourite === country.name.common) && (
-                  <i className="bi bi-heart text-danger m-1 p-1" onClick={() => dispatch(addFavourite(country.name.common))}></i>
-                )}
-                {/* <i className="bi bi-heart text-danger m-1 p-1" onClick={() => dispatch(addFavourite(country.name.common))}></i> */}
-                <Card.Img
+                  {favouritesList.includes(country.name.common) ? (
+                    <i
+                      className="bi bi-heart-fill text-danger m-1 p-1"
+                      onClick={() =>
+                        dispatch(removeFavourite(country.name.common))
+                      }
+                    ></i>
+                  ) : (
+                    <i
+                      className="bi bi-heart text-danger m-1 p-1"
+                      onClick={() =>
+                        dispatch(addFavourite(country.name.common))
+                      }
+                    ></i>
+                  )}
+                  <Card.Img
                     variant="top"
                     src={country.flags.svg}
                     className="rounded h-50"
                     style={{
-                      objectFit: 'cover',
-                      minHeight: '200px',
-                      maxHeight: '200px',
+                      objectFit: "cover",
+                      minHeight: "200px",
+                      maxHeight: "200px",
                     }}
                   />
                   <Card.Body className="d-flex flex-column">
@@ -93,13 +104,13 @@ const Countries = () => {
                     >
                       <ListGroup.Item>
                         <i className="bi bi-translate me-2"></i>
-                        {Object.values(country.languages ?? {}).join(', ')}
+                        {Object.values(country.languages ?? {}).join(", ")}
                       </ListGroup.Item>
                       <ListGroup.Item>
                         <i className="bi bi-cash-coin me-2"></i>
                         {Object.values(country.currencies || {})
                           .map((currency) => currency.name)
-                          .join(', ')}
+                          .join(", ")}
                       </ListGroup.Item>
                       <ListGroup.Item>
                         <i className="bi bi-people me-2"></i>
@@ -109,8 +120,8 @@ const Countries = () => {
                   </Card.Body>
                 </Card>
               </LinkContainer>
-            </Col>))}
-            
+            </Col>
+          ))}
       </Row>
     </Container>
   );
